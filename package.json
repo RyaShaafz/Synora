@@ -1,0 +1,43 @@
+{
+  "name": "synora-life-os",
+  "version": "0.2.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1 --port 3000",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1 --port 3000",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "db:start": "node scripts/database.mjs",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:seed": "tsx prisma/seed.ts",
+    "setup": "node scripts/setup.mjs",
+    "test:ai": "tsx scripts/smoke-ai.ts"
+  },
+  "dependencies": {
+    "next": "16.4.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "@prisma/client": "6.19.3",
+    "zod": "^4.0.0",
+    "lucide-react": "^0.468.0",
+    "recharts": "^3.0.0",
+    "react-markdown": "^10.1.0",
+    "dotenv": "^17.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "prisma": "6.19.3",
+    "tailwindcss": "^4.0.0",
+    "@tailwindcss/postcss": "^4.0.0",
+    "vitest": "^3.2.0",
+    "@playwright/test": "^1.58.0",
+    "tsx": "^4.20.0",
+    "embedded-postgres": "18.4.0-beta.17"
+  }
+}

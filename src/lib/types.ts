@@ -1,0 +1,16 @@
+import type {z} from 'zod';
+import type {taskSchema,eventSchema,goalSchema,habitSchema,journalSchema,transactionSchema,budgetSchema,savingSchema,preferenceSchema} from './validation';
+type RecordFields={id:string;createdAt:string;updatedAt:string};
+export type Task=z.infer<typeof taskSchema>&RecordFields&{completedAt:string|null};
+export type CalendarEvent=z.infer<typeof eventSchema>&RecordFields;
+export type Milestone={id:string;goalId:string;title:string;done:boolean;completedAt:string|null};
+export type Goal=z.infer<typeof goalSchema>&RecordFields&{milestones:Milestone[];completedAt:string|null;completionHistory:{id:string;completedAt:string}[]};
+export type Habit=z.infer<typeof habitSchema>&RecordFields&{completions:{id:string;date:string}[]};
+export type Journal=z.infer<typeof journalSchema>&RecordFields;
+export type Transaction=z.infer<typeof transactionSchema>&RecordFields;
+export type Budget=z.infer<typeof budgetSchema>&RecordFields;
+export type Saving=z.infer<typeof savingSchema>&RecordFields;
+export type Preferences=Omit<z.infer<typeof preferenceSchema>,'name'>;
+export type Message={id:string;role:string;content:string;actions:unknown;applied:boolean;createdAt:string};
+export type Conversation={id:string;title:string;messages:Message[];updatedAt:string};
+export type WorkspaceData={user:{id:string;name:string;email:string};preferences:Preferences;tasks:Task[];events:CalendarEvent[];goals:Goal[];habits:Habit[];journal:Journal[];transactions:Transaction[];budgets:Budget[];savings:Saving[];moods:{date:string;value:number}[];conversations:Conversation[]};

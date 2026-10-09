@@ -1,0 +1,12 @@
+ALTER TABLE "Task" ADD CONSTRAINT "Task_priority_check" CHECK ("priority" IN ('Low','Medium','High','Urgent'));
+ALTER TABLE "Task" ADD CONSTRAINT "Task_status_check" CHECK ("status" IN ('Todo','In progress','Completed'));
+ALTER TABLE "Task" ADD CONSTRAINT "Task_estimate_check" CHECK ("estimate" BETWEEN 5 AND 1440);
+ALTER TABLE "Goal" ADD CONSTRAINT "Goal_progress_check" CHECK ("progress" BETWEEN 0 AND 100);
+ALTER TABLE "Habit" ADD CONSTRAINT "Habit_frequency_check" CHECK ("frequency" BETWEEN 1 AND 7);
+ALTER TABLE "MoodEntry" ADD CONSTRAINT "MoodEntry_value_check" CHECK ("value" BETWEEN 0 AND 4);
+ALTER TABLE "JournalEntry" ADD CONSTRAINT "JournalEntry_mood_check" CHECK ("mood" IS NULL OR "mood" BETWEEN 0 AND 4);
+ALTER TABLE "FinancialTransaction" ADD CONSTRAINT "Transaction_amount_check" CHECK ("amountMinor" > 0);
+ALTER TABLE "FinancialTransaction" ADD CONSTRAINT "Transaction_type_check" CHECK ("type" IN ('Income','Expense'));
+ALTER TABLE "Budget" ADD CONSTRAINT "Budget_amount_check" CHECK ("amountMinor" > 0);
+ALTER TABLE "SavingsGoal" ADD CONSTRAINT "Savings_amount_check" CHECK ("targetMinor" > 0 AND "savedMinor" >= 0);
+ALTER TABLE "CalendarEvent" ADD CONSTRAINT "Event_time_check" CHECK ("allDay" OR "endTime" > "startTime");

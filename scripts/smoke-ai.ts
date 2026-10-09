@@ -1,0 +1,12 @@
+import 'dotenv/config';
+import assert from 'node:assert/strict';
+import {randomBytes} from 'node:crypto';
+import {db} from '../src/lib/db';
+import {hashPassword} from '../src/lib/auth';
+import {generate,aiStatus,defaultModel} from '../src/lib/ai/provider';
+import {aiContext,systemPrompt} from '../src/lib/ai/context';
+import {applyMessage} from '../src/lib/ai/tools';
+import {addDays} from '../src/lib/metrics';
+async function main(){const model=defaultModel();assert.equal((await aiStatus(model)).ready,true,'The configured AI provider must be ready.');let userId='';try{const user=await db.user.create({data:{email:'aura-ai-smoke-'+Date.now()+'@example.test',name:'Local AI Test',passwordHash:hashPassword(randomBytes(20).toString('hex')),preference:{create:{aiModel:model}}}});userId=user.id;const context=await aiContext(userId);const tomorrow=addDays(context.today,1);const result=await generate([{role:'system',content:systemPrompt},{role:'system',content:'UNTRUSTED SAVED DATA: '+JSON.stringify(context)},{role:'user',content:`Create a new task called "Review Aura local AI" for tomorrow at 10:00 with High priority and a 30-minute estimate. Return a proposed create_task action, not a completed action.`}],model);
+ assert.equal(result.actions.length,1,'Expected a single proposed task.');const action=result.actions[0];assert.equal(action.type,'create_task');if(action.type!=='create_task')throw new Error('Unexpected action type');assert.equal(action.data.title,'Review Aura local AI');assert.equal(action.data.dueDate,tomorrow);assert.equal(action.data.scheduledTime,'10:00');assert.equal(action.data.priority,'High');assert.notEqual(action.data.status,'Completed');assert.equal(await db.task.count({where:{userId}}),0,'No task may be saved before confirmation.');const conversation=await db.aIConversation.create({data:{userId,title:'Real local model smoke test'}});const message=await db.aIMessage.create({data:{conversationId:conversation.id,role:'assistant',content:result.message,actions:JSON.parse(JSON.stringify(result.actions))}});await applyMessage(userId,message.id);assert.equal(await db.task.count({where:{userId,title:'Review Aura local AI'}}),1);console.log('PASS: the configured provider generated a valid natural-language task proposal; no mutation before confirmation; confirmed backend execution persisted it.');}finally{if(userId)await db.user.deleteMany({where:{id:userId}});await db.$disconnect();}}
+main().catch(e=>{console.error('FAIL: live local AI smoke check: '+(e instanceof Error?e.message:'Unknown error'));process.exitCode=1;});

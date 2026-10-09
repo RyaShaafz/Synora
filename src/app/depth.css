@@ -1,0 +1,49 @@
+/* Sculptural surfaces around a real, lightweight WebGL scene. */
+:root { --depth-edge:#fffef9; --depth-shadow:#9c836720; }
+body { background:radial-gradient(ellipse at 80% 8%,#f4dfbf70,transparent 35%),radial-gradient(ellipse at 15% 60%,#dbe5d33b,transparent 38%),#f3f0e9; }
+body.dark { --depth-edge:#5a67533b; --depth-shadow:#0c171b60; background:radial-gradient(ellipse at 90% 10%,#695d3630,transparent 38%),var(--bg); }
+.sidebar { border-color:var(--depth-edge); box-shadow:inset 1px 1px 0 var(--depth-edge),9px 9px 30px var(--depth-shadow),-7px -7px 25px #ffffff50; }
+.sidebar nav a.active { box-shadow:inset 1px 2px 4px #6b785515,inset -1px -1px 0 #ffffff8c; }
+.sidebar .brand svg { filter:drop-shadow(0 3px 2px #ab653c24); }
+.hero { border:1px solid #fffcf3; box-shadow:inset 0 2px 0 #fffaf0,0 18px 38px #8e754117,0 3px 5px #8e754110; perspective:1000px; background:radial-gradient(ellipse at 73% 45%,#fcf3d1 0,transparent 50%),linear-gradient(115deg,#f4e5d4,#f6eddc 52%,#e6edda); }
+.hero-tag { box-shadow:inset 0 1px 1px #ffffffdd,0 2px 4px #86714912; }
+.hero .hero-manifesto { text-shadow:0 2px 0 #fff5e2; }
+.aura-universe { perspective:900px; }
+.aura-scene { position:absolute; width:360px; height:310px; left:-4px; top:-8px; }
+.aura-scene canvas { width:100%; height:100%; position:absolute; inset:0; opacity:0; transition:opacity .4s; }
+.aura-scene.scene-ready canvas { opacity:1; }
+.scene-ground { position:absolute; width:172px; height:38px; left:96px; bottom:29px; background:radial-gradient(ellipse,#7669443b,transparent 66%); filter:blur(6px); transform:rotate(-12deg); }
+.scene-backdrop { position:absolute; inset:26px 17px 30px; border:1px solid #ccbc9759; border-radius:50%; transform:rotate(-25deg) scaleY(.78); box-shadow:0 0 0 23px #a2a87705,0 0 0 48px #a2a87704; }
+.scene-css-orb { width:138px; height:138px; position:absolute; left:112px; top:74px; border-radius:50%; background:radial-gradient(circle at 30% 24%,#fffbe2,#f2d98c 24%,#e8aa5c 50%,#af7544 82%,#f1cc8a); box-shadow:inset -8px -8px 20px #85542420,0 15px 35px #ad875138; }
+.scene-ready .scene-css-orb { opacity:0; }
+.orbit-spark { z-index:1; text-shadow:0 3px 4px #a48b5522; }
+.orbit-planet { display:none; }
+.orbit-card { z-index:2; border:1px solid #fffdf4; background:linear-gradient(135deg,#fffef9ed,#f8f7e9df); box-shadow:inset 0 2px 0 #ffffff,0 13px 25px #6e67441c,0 3px 0 #d9d8b859; transform-style:preserve-3d; }
+.orbit-card-icon { box-shadow:inset 1px 2px 2px #fcfff1,2px 3px 4px #83885e14; }
+.orbit-date { transform:rotateY(-12deg) rotateX(6deg) rotateZ(6deg) translateZ(18px); }
+.orbit-progress { transform:rotateY(9deg) rotateX(7deg) rotateZ(-6deg) translateZ(35px); }
+.orbit-card:hover { transform:rotateY(0deg) rotateX(0deg) rotateZ(0deg) translateY(-5px) translateZ(45px); box-shadow:0 20px 32px #6e674424,0 3px 0 #d9d8b859; }
+.depth-panel { transform:perspective(1200px) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg)); transition:transform .18s ease-out,box-shadow .2s; border-color:var(--depth-edge); box-shadow:inset 0 1px 0 var(--depth-edge),0 4px 0 #dedbce35,0 10px 25px var(--depth-shadow); }
+.depth-panel:has(input:focus-visible),.depth-panel:has(textarea:focus-visible),.depth-panel:has(select:focus-visible) { transform:none; }
+.stat { border:1px solid var(--depth-edge); box-shadow:inset 0 2px 0 #ffffff99,0 4px 0 #dfd9ca30,0 10px 22px var(--depth-shadow); transition:transform .2s,box-shadow .2s; }
+.stat-icon { box-shadow:inset 2px 2px 4px #ffffffaa,inset -2px -2px 4px #7d896b14,2px 4px 6px #89897414; }
+.btn.primary { box-shadow:inset 0 1px 0 #ffffff22,0 3px 0 #213d2e,0 7px 13px #29423120; }
+.btn.primary:hover { box-shadow:inset 0 1px 0 #ffffff22,0 4px 0 #213d2e,0 10px 16px #29423125; }
+.btn.primary:active { transform:translateY(2px); box-shadow:inset 0 1px 0 #ffffff22,0 1px 0 #213d2e; }
+.mood-face { box-shadow:inset 2px 3px 5px #fffcf4dd,inset -2px -3px 5px #8d86552b,0 5px 7px #93895c18; transform:translateZ(10px); }
+.mood-options button:hover .mood-face { transform:translateY(-3px) scale(1.07); }
+.timer-dial { box-shadow:0 12px 24px #0b241a24,inset 0 1px 1px #ffffff40; }
+.timer-dial strong { box-shadow:inset 0 5px 12px #122e233d,0 1px 1px #ffffff22; text-shadow:0 3px 2px #19332433; }
+.focus-panel { border-color:#58715b; box-shadow:inset 0 1px 0 #8b9a7840,0 4px 0 #294430,0 12px 28px #183e2426; }
+.focus-panel .btn.primary { box-shadow:inset 0 2px 0 #ffffff88,0 3px 0 #a8b393,0 7px 14px #182b2333; }
+.chat-welcome .hero-orb { box-shadow:inset -4px -5px 10px #8f613224,0 0 0 7px #e9cea218,0 0 0 15px #e9cea210,0 12px 20px #92744530; }
+.suggested-prompts button { box-shadow:inset 0 1px 0 var(--depth-edge),0 3px 0 #dfd9ca40,0 9px 18px var(--depth-shadow); }
+.insight-strip { box-shadow:inset 0 1px 0 #fffcf2,0 4px 0 #dfd5c130,0 10px 25px #9e865e12; }
+body.dark .hero { border-color:#637055; box-shadow:inset 0 1px 0 #a7b29030,0 18px 35px #101b1550; }
+body.dark .hero .hero-manifesto { text-shadow:0 2px 1px #172a1b70; }
+body.dark .stat { box-shadow:inset 0 1px 0 #b8c9a415,0 4px 0 #0c171b20,0 10px 22px var(--depth-shadow); }
+body.dark .stat-icon { box-shadow:inset 1px 2px 3px #a2b39522,inset -1px -2px 4px #0c171b20,0 3px 5px #0c171b30; }
+body.dark .insight-strip { box-shadow:inset 0 1px 0 #c6c49f20,0 10px 25px #0c171b33; }
+@media(hover:hover) and (pointer:fine) { .stat:hover { transform:perspective(900px) translateY(-4px) rotateX(2deg); box-shadow:inset 0 2px 0 #ffffff88,0 5px 0 #dfd9ca30,0 18px 26px var(--depth-shadow); } }
+@media(max-width:640px) { .aura-scene { width:320px; height:265px; left:-12px; top:-4px; } .scene-ground { left:74px; bottom:14px; } .scene-css-orb { left:91px; top:64px; } .depth-panel { transform:none; } }
+@media(prefers-reduced-motion:reduce) { .depth-panel,.stat:hover { transform:none; } .aura-scene canvas { transition:none; } }

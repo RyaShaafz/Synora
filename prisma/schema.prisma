@@ -1,0 +1,233 @@
+generator client {
+ provider = "prisma-client-js"
+}
+datasource db {
+ provider = "postgresql"
+ url = env("DATABASE_URL")
+}
+model User {
+ id String @id @default(cuid())
+ email String @unique
+ name String
+ passwordHash String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ preference UserPreference?
+ sessions Session[]
+ tasks Task[]
+ events CalendarEvent[]
+ goals Goal[]
+ habits Habit[]
+ journals JournalEntry[]
+ transactions FinancialTransaction[]
+ budgets Budget[]
+ savings SavingsGoal[]
+ conversations AIConversation[]
+ moods MoodEntry[]
+}
+model Session {
+ id String @id
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ expiresAt DateTime
+ createdAt DateTime @default(now())
+ @@index([userId])
+ @@index([expiresAt])
+}
+model UserPreference {
+ id String @id @default(cuid())
+ userId String @unique
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ timezone String @default("Asia/Kolkata")
+ currency String @default("INR")
+ weekStart Int @default(1)
+ theme String @default("light")
+ notifications Boolean @default(true)
+ aiModel String @default("qwen3:4b")
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+}
+model Task {
+ id String @id @default(cuid())
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ title String
+ description String @default("")
+ category String @default("Personal")
+ priority String @default("Medium")
+ status String @default("Todo")
+ dueDate String?
+ startDate String?
+ scheduledTime String?
+ estimate Int @default(30)
+ recurring String @default("None")
+ focus Boolean @default(false)
+ tags String[] @default([])
+ completedAt DateTime?
+ goalId String?
+ goal Goal? @relation(fields:[goalId],references:[id],onDelete:SetNull)
+ recurrenceParentId String? @unique
+ recurrenceParent Task? @relation("TaskRecurrence",fields:[recurrenceParentId],references:[id],onDelete:SetNull)
+ recurrenceChild Task? @relation("TaskRecurrence")
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([userId,status,dueDate])
+ @@index([goalId])
+}
+model CalendarEvent {
+ id String @id @default(cuid())
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ title String
+ description String @default("")
+ date String
+ startTime String @default("09:00")
+ endTime String @default("10:00")
+ allDay Boolean @default(false)
+ category String @default("Personal")
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([userId,date])
+}
+model Goal {
+ id String @id @default(cuid())
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ title String
+ description String @default("")
+ category String @default("Personal")
+ targetDate String?
+ status String @default("Active")
+ progress Int @default(0)
+ completedAt DateTime?
+ milestones GoalMilestone[]
+ tasks Task[]
+ completionHistory GoalCompletion[]
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([userId,status])
+}
+model GoalCompletion {
+ id String @id @default(cuid())
+ goalId String
+ goal Goal @relation(fields:[goalId],references:[id],onDelete:Cascade)
+ completedAt DateTime @default(now())
+ @@index([goalId,completedAt])
+}
+model GoalMilestone {
+ id String @id @default(cuid())
+ goalId String
+ goal Goal @relation(fields:[goalId],references:[id],onDelete:Cascade)
+ title String
+ done Boolean @default(false)
+ completedAt DateTime?
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([goalId])
+}
+model Habit {
+ id String @id @default(cuid())
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ title String
+ description String @default("")
+ category String @default("Wellbeing")
+ frequency Int @default(7)
+ archived Boolean @default(false)
+ completions HabitCompletion[]
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([userId,archived])
+}
+model HabitCompletion {
+ id String @id @default(cuid())
+ habitId String
+ habit Habit @relation(fields:[habitId],references:[id],onDelete:Cascade)
+ date String
+ createdAt DateTime @default(now())
+ @@unique([habitId,date])
+}
+model JournalEntry {
+ id String @id @default(cuid())
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ title String
+ content String
+ date String
+ mood Int?
+ tags String[] @default([])
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([userId,date])
+}
+model MoodEntry {
+ id String @id @default(cuid())
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ date String
+ value Int
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@unique([userId,date])
+}
+model FinancialTransaction {
+ id String @id @default(cuid())
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ title String
+ description String @default("")
+ type String @default("Expense")
+ category String @default("Other")
+ amountMinor Int
+ currency String @default("INR")
+ date String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([userId,date,currency])
+}
+model Budget {
+ id String @id @default(cuid())
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ month String
+ category String @default("Overall")
+ amountMinor Int
+ currency String @default("INR")
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@unique([userId,month,category,currency])
+}
+model SavingsGoal {
+ id String @id @default(cuid())
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ title String
+ targetMinor Int
+ savedMinor Int @default(0)
+ currency String @default("INR")
+ targetDate String?
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([userId])
+}
+model AIConversation {
+ id String @id @default(cuid())
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+ title String
+ messages AIMessage[]
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([userId])
+}
+model AIMessage {
+ id String @id @default(cuid())
+ conversationId String
+ conversation AIConversation @relation(fields:[conversationId],references:[id],onDelete:Cascade)
+ role String
+ content String
+ actions Json?
+ applied Boolean @default(false)
+ createdAt DateTime @default(now())
+ @@index([conversationId,createdAt])
+}
